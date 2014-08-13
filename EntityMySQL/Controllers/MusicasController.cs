@@ -46,10 +46,12 @@ namespace EntityMySQL.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nome")] Musica musica)
+        public ActionResult Create([Bind(Include = "ID,Nome,Artista,Genero")] Musica musica)
         {
             if (ModelState.IsValid)
             {
+                musica.Genero = db.Generos.Find(musica.Genero.ID);
+                musica.Artista = db.Artistas.Find(musica.Artista.ID);
                 db.Musicas.Add(musica);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -78,11 +80,13 @@ namespace EntityMySQL.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nome")] Musica musica)
+        public ActionResult Edit([Bind(Include = "ID,Nome,Artista,Genero")] Musica musica)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(musica).State = EntityState.Modified;
+                var msk = db.Musicas.Find(musica.ID);
+                msk.Genero = db.Generos.Find(musica.Genero.ID);
+                msk.Artista = db.Artistas.Find(musica.Artista.ID);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
